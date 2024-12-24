@@ -1,0 +1,21 @@
+{
+  "name": "@your-name/widget-counter",
+  "description": "一个简单的计数器小组件",
+  "homePage": "https://github.com/gristlabs/grist-widget",
+  "version": "0.0.1",
+  "grist": {
+    "name": "计数器",
+    "url": "https://gristlabs.github.io/grist-widget/counter/index.html",
+    "widgetId": "@your-name/widget-counter",
+    "published": true,
+    "accessLevel": "full",
+    "renderAfterReady": true,
+    "description": "显示一个可以增加/减少的数字计数器。",
+    "authors": [
+      {
+        "name": "您的名字",
+        "url": "https://github.com/your-name"
+      }
+    ]
+  }
+} 

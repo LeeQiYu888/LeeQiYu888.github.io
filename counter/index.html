@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <title>计数器小组件</title>
+  <!-- 引入Grist插件API,用于与Grist文档交互 -->
+  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  <style>
+    /* 基础样式设置 */
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;  /* 水平居中 */
+      align-items: center;      /* 垂直居中 */
+      height: 100vh;           /* 占满整个视窗高度 */
+      margin: 0;
+    }
+    
+    /* 计数器容器样式 */
+    .counter {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;      /* 圆角边框 */
+    }
+    
+    /* 数字显示区域样式 */
+    .number {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    
+    /* 按钮样式 */
+    button {
+      padding: 5px 15px;
+      margin: 0 5px;
+      cursor: pointer;         /* 鼠标悬停时显示手型光标 */
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    
+    /* 按钮悬停效果 */
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <!-- 计数器界面结构 -->
+  <div class="counter">
+    <div class="number" id="display">0</div>
+    <div>
+      <button onclick="decrease()">-</button>
+      <button onclick="increase()">+</button>
+    </div>
+  </div>
+
+  <script>
+    // 全局变量声明
+    let currentValue = 0;    // 当前计数值
+    let rowId = null;        // Grist中的行ID
+    let columnId = null;     // Grist中的列ID
+    
+    // 初始化Grist小组件
+    // 声明需要一个名为"Count"的数字类型列
+    // requiredAccess: 'full' 表示需要完整的读写权限
+    grist.ready({
+      columns: [{name: "Count", type: "Numeric"}],
+      requiredAccess: 'full'
+    });
+
+    // 监听记录变化
+    // 当用户在Grist中选择不同的行时触发
+    grist.onRecord(function(record, mappings) {
+      // 检查是否在Creator Panel中选择了Count列
+      if (!mappings?.Count) {
+        console.error("请在创建面板中选择一个数字列");
+        return;
+      }
+      
+      // 获取实际映射的列ID和当前行ID
+      columnId = mappings.Count;
+      rowId = record.id;
+      // 获取当前值,如果为空则默认为0
+      currentValue = record[columnId] || 0;
+      // 更新显示
+      updateDisplay();
+    });
+
+    // 更新显示函数
+    // 将当前值显示到界面上
+    function updateDisplay() {
+      document.getElementById('display').textContent = currentValue;
+    }
+
+    // 增加数值函数
+    async function increase() {
+      // 检查是否已正确设置行ID和列ID
+      if (!rowId || !columnId) return;
+      // 增加计数
+      currentValue++;
+      // 更新显示
+      updateDisplay();
+      // 保存到Grist
+      await saveToGrist();
+    }
+
+    // 减少数值函数
+    async function decrease() {
+      // 检查是否已正确设置行ID和列ID
+      if (!rowId || !columnId) return;
+      // 减少计数
+      currentValue--;
+      // 更新显示
+      updateDisplay();
+      // 保存到Grist
+      await saveToGrist();
+    }
+
+    // 保存到Grist函数
+    // 将当前值保存回Grist文档
+    async function saveToGrist() {
+      try {
+        // 获取Grist表格对象
+        const table = await grist.getTable();
+        // 更新指定行的数据
+        await table.update({
+          id: rowId,
+          fields: {
+            [columnId]: currentValue  // 使用动态列ID
+          }
+        });
+      } catch (err) {
+        console.error('保存失败:', err);
+      }
+    }
+  </script>
+</body>
+</html> 
