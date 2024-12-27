@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <title>诊疗服务月报</title>
+  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="js/utils.js"></script>
+  <script src="js/stations/caixi.js"></script>
+  <script src="js/main.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="report-header">
+      <h1>诊疗服务<select id="monthSelect" class="month-select">
+        <option value="01">01</option>
+        <option value="02">02</option>
+        <option value="03">03</option>
+        <option value="04">04</option>
+        <option value="05">05</option>
+        <option value="06">06</option>
+        <option value="07">07</option>
+        <option value="08">08</option>
+        <option value="09">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>月</h1>
+    </div>
+
+    <div class="report-table">
+      <table id="reportTable">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>指标</th>
+            <th>槐柏树</th>
+            <th>西便门</th>
+            <th>三庙</th>
+            <th>长西</th>
+            <th>菜西</th>
+            <th>全科</th>
+            <th>中医</th>
+            <th>口腔</th>
+            <th>保健科</th>
+            <th>中心合计</th>
+            <th>合计</th>
+          </tr>
+        </thead>
+        <tbody id="reportBody">
+          <!-- 数据行将通过JavaScript动态生成 -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="loadingIndicator" class="loading">
+      数据加载中...
+    </div>
+
+    <div id="errorMessage" class="error" style="display:none">
+    </div>
+  </div>
+</body>
+</html> 

@@ -1,0 +1,21 @@
+{
+  "name": "@gristlabs/public-health-report",
+  "description": "广内社区公卫报表小组件",
+  "homePage": "https://github.com/gristlabs/grist-widget",
+  "version": "0.0.1",
+  "grist": {
+    "name": "广内社区公卫报表",
+    "url": "https://gristlabs.github.io/grist-widget/public-health-report/index.html",
+    "widgetId": "@gristlabs/public-health-report",
+    "published": true,
+    "accessLevel": "full",
+    "renderAfterReady": true,
+    "description": "用于生成广内社区公卫统计报表",
+    "authors": [
+      {
+        "name": "Grist Labs",
+        "url": "https://github.com/gristlabs"
+      }
+    ]
+  }
+} 
