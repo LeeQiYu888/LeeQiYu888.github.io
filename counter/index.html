@@ -15,7 +15,7 @@
       height: 100vh;           /* 占满整个视窗高度 */
       margin: 0;
     }
-    
+
     /* 计数器容器样式 */
     .counter {
       text-align: center;
@@ -23,13 +23,13 @@
       border: 1px solid #ccc;
       border-radius: 8px;      /* 圆角边框 */
     }
-    
+
     /* 数字显示区域样式 */
     .number {
       font-size: 24px;
       margin: 10px 0;
     }
-    
+
     /* 按钮样式 */
     button {
       padding: 5px 15px;
@@ -40,7 +40,7 @@
       border: none;
       border-radius: 4px;
     }
-    
+
     /* 按钮悬停效果 */
     button:hover {
       background-color: #45a049;
@@ -62,7 +62,7 @@
     let currentValue = 0;    // 当前计数值
     let rowId = null;        // Grist中的行ID
     let columnId = null;     // Grist中的列ID
-    
+
     // 初始化Grist小组件
     // 声明需要一个名为"Count"的数字类型列
     // requiredAccess: 'full' 表示需要完整的读写权限
@@ -79,7 +79,7 @@
         console.error("请在创建面板中选择一个数字列");
         return;
       }
-      
+
       // 获取实际映射的列ID和当前行ID
       columnId = mappings.Count;
       rowId = record.id;
@@ -138,4 +138,4 @@
     }
   </script>
 </body>
-</html> 
+</html>

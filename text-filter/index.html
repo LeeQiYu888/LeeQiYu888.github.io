@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <title>文本筛选统计</title>
+  <!-- 引入Grist插件API -->
+  <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #666;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .results {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+    }
+
+    .result-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #4CAF50;
+      margin-bottom: 10px;
+    }
+
+    .keyword {
+      display: inline-block;
+      margin: 2px;
+      padding: 2px 8px;
+      background: #e3f2fd;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 筛选输入框 -->
+    <div class="input-group">
+      <label>请输入筛选关键词(多个关键词用逗号分隔)</label>
+      <input type="text" id="filterInput" 
+             placeholder="例如: 高血压,糖尿病"
+             oninput="onFilterChange(this.value)">
+    </div>
+
+    <!-- 结果显示区域 -->
+    <div class="results">
+      <div class="total" id="totalCount">匹配记录数: 0</div>
+      <div id="keywords"></div>
+      <div id="matchList"></div>
+    </div>
+  </div>
+
+  <script>
+    let allRecords = [];     // 存储所有记录
+    let columnId = null;     // 选择的列ID
+    
+    // 初始化Grist小组件
+    grist.ready({
+      columns: [{name: "Text", type: "Text"}],
+      requiredAccess: 'read table'
+    });
+
+    // 监听所有记录变化
+    grist.onRecords(function(records, mappings) {
+      if (!mappings?.Text) {
+        console.error("请在创建面板中选择一个文本列");
+        return;
+      }
+      
+      columnId = mappings.Text;
+      allRecords = records;
+      
+      // 重新执行筛选
+      const filterValue = document.getElementById('filterInput').value;
+      if (filterValue) {
+        filterAndDisplay(filterValue);
+      }
+    });
+
+    // 处理筛选值变化
+    function onFilterChange(value) {
+      filterAndDisplay(value);
+    }
+
+    // 筛选并显示结果
+    function filterAndDisplay(filterValue) {
+      if (!columnId || !allRecords.length) return;
+
+      // 分割关键词
+      const keywords = filterValue.split(',')
+        .map(k => k.trim())
+        .filter(k => k.length > 0);
+
+      // 显示关键词标签
+      displayKeywords(keywords);
+
+      if (keywords.length === 0) {
+        displayResults([], []);
+        return;
+      }
+
+      // 筛选匹配的记录
+      const matchedRecords = allRecords.filter(record => {
+        const content = (record[columnId] || '').toString().toLowerCase();
+        return keywords.some(keyword => 
+          content.includes(keyword.toLowerCase())
+        );
+      });
+
+      // 为每条记录标记匹配了哪些关键词
+      const recordMatches = matchedRecords.map(record => {
+        const content = (record[columnId] || '').toString();
+        const matches = keywords.filter(keyword => 
+          content.toLowerCase().includes(keyword.toLowerCase())
+        );
+        return {
+          content,
+          matches
+        };
+      });
+
+      displayResults(matchedRecords, recordMatches);
+    }
+
+    // 显示关���词标签
+    function displayKeywords(keywords) {
+      const keywordsDiv = document.getElementById('keywords');
+      if (keywords.length === 0) {
+        keywordsDiv.innerHTML = '';
+        return;
+      }
+
+      keywordsDiv.innerHTML = '当前筛选关键词: ' + 
+        keywords.map(k => `<span class="keyword">${k}</span>`).join(' ');
+    }
+
+    // 显示筛选结果
+    function displayResults(records, matches) {
+      // 更新总数
+      document.getElementById('totalCount').textContent = 
+        `匹配记录数: ${records.length}`;
+
+      // 更新匹配列表
+      const matchList = document.getElementById('matchList');
+      if (records.length === 0) {
+        matchList.innerHTML = '<div class="result-item">无匹配记录</div>';
+        return;
+      }
+
+      matchList.innerHTML = matches.map((match, index) => `
+        <div class="result-item">
+          <div>${match.content}</div>
+          <div style="font-size: 12px; color: #666; margin-top: 5px;">
+            匹配关键词: ${match.matches.map(k => 
+              `<span class="keyword">${k}</span>`
+            ).join(' ')}
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html> 

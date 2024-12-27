@@ -1,0 +1,21 @@
+{
+  "name": "@gristlabs/widget-text-filter",
+  "description": "文本筛选统计小组件",
+  "homePage": "https://github.com/gristlabs/grist-widget",
+  "version": "0.0.1",
+  "grist": {
+    "name": "文本筛选统计",
+    "url": "https://gristlabs.github.io/grist-widget/text-filter/index.html",
+    "widgetId": "@gristlabs/widget-text-filter",
+    "published": true,
+    "accessLevel": "read table",
+    "renderAfterReady": true,
+    "description": "对文本列进行多值模糊匹配并统计结果数量",
+    "authors": [
+      {
+        "name": "Grist Labs",
+        "url": "https://github.com/gristlabs"
+      }
+    ]
+  }
+} 
